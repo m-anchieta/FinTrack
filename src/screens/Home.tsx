@@ -16,6 +16,8 @@ import { useFinanceStore } from '../store/useFinanceStore';
 
 import Header from '../components/Header';
 
+import { formatCurrency } from '../utils/formatCurrency';
+
 export default function Home() {
 
   const loadEntries = useFinanceStore(
@@ -258,7 +260,7 @@ export default function Home() {
         </Text>
 
         <Text style={styles.balanceValue}>
-          R$ {balance.toFixed(2)}
+          {formatCurrency(balance)}
         </Text>
 
       </View>
@@ -272,7 +274,7 @@ export default function Home() {
           </Text>
 
           <Text style={styles.incomeValue}>
-            R$ {income.toFixed(2)}
+            {formatCurrency(income)}
           </Text>
 
         </View>
@@ -284,7 +286,7 @@ export default function Home() {
           </Text>
 
           <Text style={styles.expenseValue}>
-            R$ {expense.toFixed(2)}
+            {formatCurrency(expense)}
           </Text>
 
         </View>
@@ -332,7 +334,7 @@ export default function Home() {
             {item.type === 'income'
               ? '+'
               : '-'}
-            R$ {item.amount}
+            {formatCurrency(item.amount)}
           </Text>
 
         </View>

@@ -1,183 +1,80 @@
-import { create } from 'zustand';
-
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import { Category } from '../types/category';
-
-import { useAuthStore } from './useAuthStore';
-
-const STORAGE_KEY = 'fintrack:categories';
+import { create } from "zustand";
+import { Category } from "../types/category";
+import { useAuthStore } from "./useAuthStore";
+import {
+  addCategory as addCategoryDB,
+  getCategoriesByUser,
+  deleteCategory as deleteCategoryDB,
+  updateCategory as updateCategoryDB,
+} from "../database/categoryRepository";
 
 interface CategoryState {
-
   categories: Category[];
 
   loadCategories: () => Promise<void>;
 
-  addCategory: (
-    category: Category
-  ) => Promise<void>;
+  addCategory: (category: Category) => Promise<void>;
 
-  deleteCategory: (
-    id: string
-  ) => Promise<void>;
+  deleteCategory: (id: string) => Promise<void>;
 
-  updateCategory: (
-    id: string,
-    name: string,
-    color: string
-  ) => Promise<void>;
+  updateCategory: (id: string, name: string, color: string) => Promise<void>;
 }
 
-export const useCategoryStore =
-  create<CategoryState>((set, get) => ({
+export const useCategoryStore = create<CategoryState>((set, get) => ({
+  categories: [],
 
-    categories: [],
+  loadCategories: async () => {
+  const userId = useAuthStore.getState().user?.id;
 
-    loadCategories: async () => {
+  if (!userId) {
+    set({ categories: [] });
+    return;
+  }
 
-      const userId =
-        useAuthStore.getState().user?.id;
+  const categories = getCategoriesByUser(userId);
 
-      if (!userId) return;
+  console.log('USER ID LOAD:', userId);
+  console.log('CATEGORIES LOAD:', categories);
 
-      const data =
-        await AsyncStorage.getItem(
-          STORAGE_KEY
-        );
+  set({ categories });
+},
 
-      if (!data) {
+  addCategory: async (category) => {
+    addCategoryDB(category);
 
-        set({
-          categories: [],
-        });
+    const categories = getCategoriesByUser(category.userId);
 
-        return;
-      }
+    set({
+      categories,
+    });
 
-      const allCategories: Category[] =
-        JSON.parse(data);
+    console.log('CATEGORY ADD:', category);
+  },
 
-      const userCategories =
-        allCategories.filter(
-          (item) =>
-            item.userId === userId
-        );
+  deleteCategory: async (id) => {
+    deleteCategoryDB(id);
 
-      set({
-        categories: userCategories,
-      });
-    },
+    const userId = useAuthStore.getState().user?.id;
 
-    addCategory: async (category) => {
+    if (!userId) return;
 
-      const data =
-        await AsyncStorage.getItem(
-          STORAGE_KEY
-        );
+    const categories = getCategoriesByUser(userId);
 
-      const allCategories =
-        data
-          ? JSON.parse(data)
-          : [];
+    set({
+      categories,
+    });
+  },
+  updateCategory: async (id, name, color) => {
+    updateCategoryDB(id, name, color);
 
-      const updated = [
-        ...allCategories,
-        category,
-      ];
+    const userId = useAuthStore.getState().user?.id;
 
-      await AsyncStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updated)
-      );
+    if (!userId) return;
 
-      const userId =
-        useAuthStore.getState().user?.id;
+    const categories = getCategoriesByUser(userId);
 
-      set({
-        categories: updated.filter(
-          (item: Category) =>
-            item.userId === userId
-        ),
-      });
-    },
-
-    deleteCategory: async (id) => {
-
-      const data =
-        await AsyncStorage.getItem(
-          STORAGE_KEY
-        );
-
-      const allCategories =
-        data
-          ? JSON.parse(data)
-          : [];
-
-      const updated =
-        allCategories.filter(
-          (item: Category) =>
-            item.id !== id
-        );
-
-      await AsyncStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updated)
-      );
-
-      const userId =
-        useAuthStore.getState().user?.id;
-
-      set({
-        categories: updated.filter(
-          (item: Category) =>
-            item.userId === userId
-        ),
-      });
-    },
-
-    updateCategory: async (
-      id,
-      name,
-      color
-    ) => {
-
-      const data =
-        await AsyncStorage.getItem(
-          STORAGE_KEY
-        );
-
-      const allCategories =
-        data
-          ? JSON.parse(data)
-          : [];
-
-      const updated =
-        allCategories.map(
-          (item: Category) =>
-            item.id === id
-              ? {
-                  ...item,
-                  name,
-                  color,
-                }
-              : item
-        );
-
-      await AsyncStorage.setItem(
-        STORAGE_KEY,
-        JSON.stringify(updated)
-      );
-
-      const userId =
-        useAuthStore.getState().user?.id;
-
-      set({
-        categories: updated.filter(
-          (item: Category) =>
-            item.userId === userId
-        ),
-      });
-    },
-
-  }));
+    set({
+      categories,
+    });
+  },
+}));

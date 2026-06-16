@@ -8,10 +8,11 @@ export const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 20,
+    fontSize: 32,
     fontWeight: '700',
-    color: '#0B1736',
-    marginBottom: 28,
+    color: '#0F172A',
+    marginBottom: 25,
+    marginTop: 45,
   },
 
   switchContainer: {

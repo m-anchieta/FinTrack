@@ -26,7 +26,6 @@ const COLORS = [
 ];
 
 export default function Tags() {
-
   const [name, setName] = useState('');
 
   const [selectedColor, setSelectedColor] =
@@ -48,36 +47,31 @@ export default function Tags() {
   );
 
   useEffect(() => {
-
     if (user) {
       loadCategories();
     }
-
-  }, [user]);
+  }, [user, loadCategories]);
 
   async function handleAddOrUpdate() {
+    const categoryName = name.trim();
 
-    if (!name.trim() || !user) return;
+    if (!categoryName || !user) return;
 
     if (editingId) {
-
       await updateCategory(
         editingId,
-        name,
+        categoryName,
         selectedColor
       );
 
       setEditingId(null);
-
     } else {
-
       await addCategory({
         id: String(Date.now()),
         userId: user.id,
-        name: name.trim(),
+        name: categoryName,
         color: selectedColor,
       });
-
     }
 
     setName('');
@@ -85,16 +79,12 @@ export default function Tags() {
   }
 
   function handleEdit(item: any) {
-
     setEditingId(item.id);
-
-    setName(item.name);
-
+    setName(item.name.trim());
     setSelectedColor(item.color);
   }
 
   function handleDelete(id: string) {
-
     Alert.alert(
       'Excluir categoria',
       'Deseja realmente excluir esta categoria?',
@@ -113,18 +103,15 @@ export default function Tags() {
   }
 
   return (
-
     <ScrollView
       style={styles.container}
       showsVerticalScrollIndicator={false}
     >
-
       <Text style={styles.title}>
         Gerenciar Categorias
       </Text>
 
       <View style={styles.card}>
-
         <Text style={styles.cardTitle}>
           {editingId
             ? 'Editar Categoria'
@@ -147,17 +134,12 @@ export default function Tags() {
         </Text>
 
         <View style={styles.colorsContainer}>
-
           {COLORS.map((color) => (
-
             <TouchableOpacity
               key={color}
               style={[
                 styles.colorItem,
-                {
-                  backgroundColor: color,
-                },
-
+                { backgroundColor: color },
                 selectedColor === color &&
                   styles.selectedColor,
               ]}
@@ -165,24 +147,19 @@ export default function Tags() {
                 setSelectedColor(color)
               }
             />
-
           ))}
-
         </View>
 
         <TouchableOpacity
           style={styles.addButton}
           onPress={handleAddOrUpdate}
         >
-
           <Text style={styles.addButtonText}>
             {editingId
               ? 'Salvar Alterações'
               : 'Adicionar Categoria'}
           </Text>
-
         </TouchableOpacity>
-
       </View>
 
       <Text style={styles.sectionTitle}>
@@ -190,9 +167,7 @@ export default function Tags() {
       </Text>
 
       {categories.length === 0 ? (
-
         <View style={styles.categoryCard}>
-
           <Text
             style={{
               color: '#64748B',
@@ -201,20 +176,14 @@ export default function Tags() {
           >
             Nenhuma categoria cadastrada.
           </Text>
-
         </View>
-
       ) : (
-
         categories.map((item) => (
-
           <View
             key={item.id}
             style={styles.categoryCard}
           >
-
             <View style={styles.categoryLeft}>
-
               <View
                 style={[
                   styles.categoryColor,
@@ -228,25 +197,21 @@ export default function Tags() {
               <Text
                 style={styles.categoryName}
               >
-                {item.name}
+                {item.name.trim()}
               </Text>
-
             </View>
 
             <View style={styles.actions}>
-
               <TouchableOpacity
                 onPress={() =>
                   handleEdit(item)
                 }
               >
-
                 <Feather
                   name="edit"
                   size={20}
                   color="#2563EB"
                 />
-
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -254,23 +219,16 @@ export default function Tags() {
                   handleDelete(item.id)
                 }
               >
-
                 <Feather
                   name="trash-2"
                   size={20}
                   color="#EF4444"
                 />
-
               </TouchableOpacity>
-
             </View>
-
           </View>
-
         ))
-
       )}
-
     </ScrollView>
   );
 }

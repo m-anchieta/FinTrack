@@ -1,10 +1,13 @@
-import { create } from 'zustand';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { create } from "zustand";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { User } from "../types/users";
+import {
+  createUser,
+  getUserByEmail,
+  getUserByCredentials,
+} from "../database/userRepository";
 
-import { User } from '../types/users';
-
-const USERS_KEY = 'fintrack:users';
-const SESSION_KEY = 'fintrack:session';
+const SESSION_KEY = "fintrack:session";
 
 interface AuthState {
   user: User | null;
@@ -12,7 +15,7 @@ interface AuthState {
   register: (
     name: string,
     email: string,
-    password: string
+    password: string,
   ) => Promise<{
     success: boolean;
     message: string;
@@ -20,7 +23,7 @@ interface AuthState {
 
   login: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{
     success: boolean;
     message: string;
@@ -31,138 +34,75 @@ interface AuthState {
   loadSession: () => Promise<void>;
 }
 
-export const useAuthStore = create<AuthState>(
-  (set) => ({
+export const useAuthStore = create<AuthState>((set) => ({
+  user: null,
 
-    user: null,
+  register: async (name, email, password) => {
+    const existingUser = getUserByEmail(email);
 
-    register: async (
+    if (existingUser) {
+      return {
+        success: false,
+        message: "Já existe um usuário cadastrado com este e-mail.",
+      };
+    }
+
+    const newUser: User = {
+      id: String(Date.now()),
       name,
       email,
-      password
-    ) => {
+      password,
+    };
 
-      const data =
-        await AsyncStorage.getItem(
-          USERS_KEY
-        );
+    createUser(newUser.id, newUser.name, newUser.email, newUser.password);
 
-      const users: User[] =
-        data ? JSON.parse(data) : [];
+    return {
+      success: true,
+      message: "Usuário cadastrado com sucesso.",
+    };
+  },
 
-      const emailExists = users.find(
-        (user) =>
-          user.email.toLowerCase() ===
-          email.toLowerCase()
-      );
+  login: async (email, password) => {
+    const foundUser = getUserByCredentials(email, password);
 
-      if (emailExists) {
-        return {
-          success: false,
-          message:
-            'Já existe um usuário cadastrado com este e-mail.',
-        };
-      }
-
-      const newUser: User = {
-        id: String(Date.now()),
-        name,
-        email,
-        password,
-      };
-
-      const updatedUsers = [
-        ...users,
-        newUser,
-      ];
-
-      await AsyncStorage.setItem(
-        USERS_KEY,
-        JSON.stringify(updatedUsers)
-      );
-
+    if (!foundUser) {
       return {
-        success: true,
-        message:
-          'Usuário cadastrado com sucesso.',
+        success: false,
+        message: "E-mail ou senha inválidos.",
       };
-    },
+    }
 
-    login: async (
-      email,
-      password
-    ) => {
+    await AsyncStorage.setItem(SESSION_KEY, JSON.stringify(foundUser));
 
-      const data =
-        await AsyncStorage.getItem(
-          USERS_KEY
-        );
+    set({
+      user: foundUser,
+    });
 
-      const users: User[] =
-        data ? JSON.parse(data) : [];
+    return {
+      success: true,
+      message: "Login realizado.",
+    };
+  },
 
-      const foundUser = users.find(
-        (user) =>
-          user.email.toLowerCase() ===
-            email.toLowerCase() &&
-          user.password === password
-      );
+  logout: async () => {
+    await AsyncStorage.removeItem(SESSION_KEY);
 
-      if (!foundUser) {
-        return {
-          success: false,
-          message:
-            'E-mail ou senha inválidos.',
-        };
-      }
+    set({
+      user: null,
+    });
+  },
 
-      await AsyncStorage.setItem(
-        SESSION_KEY,
-        JSON.stringify(foundUser)
-      );
+  loadSession: async () => {
+    const session = await AsyncStorage.getItem(SESSION_KEY);
 
+    if (session) {
       set({
-        user: foundUser,
+        user: JSON.parse(session),
       });
-
-      return {
-        success: true,
-        message: 'Login realizado.',
-      };
-    },
-
-    logout: async () => {
-
-      await AsyncStorage.removeItem(
-        SESSION_KEY
-      );
-
+    } else {
       set({
         user: null,
       });
-    },
-
-    loadSession: async () => {
-
-      const session =
-        await AsyncStorage.getItem(
-          SESSION_KEY
-        );
-
-      if (session) {
-
-        set({
-          user: JSON.parse(session),
-        });
-
-      } else {
-
-        set({
-          user: null,
-        });
-
-      }
-    },
-
-  })
-);
+    }
+  },
+}));

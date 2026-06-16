@@ -10,8 +10,9 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 32,
     fontWeight: '700',
-    marginBottom: 20,
     color: '#0F172A',
+    marginBottom: 25,
+    marginTop: 45,
   },
 
   card: {

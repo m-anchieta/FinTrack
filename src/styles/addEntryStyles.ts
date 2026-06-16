@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#0F172A',
     marginBottom: 25,
-    marginTop: 10,
+    marginTop: 45,
   },
 
   card: {
@@ -56,6 +56,84 @@ export const styles = StyleSheet.create({
     borderRadius: 14,
     overflow: 'hidden',
   },
+
+  categorySelector: {
+  backgroundColor: '#F3F4F6',
+  borderRadius: 12,
+  paddingHorizontal: 15,
+  paddingVertical: 16,
+  justifyContent: 'center',
+},
+
+categorySelectorText: {
+  fontSize: 16,
+  color: '#111827',
+},
+
+categoryPlaceholderText: {
+  fontSize: 16,
+  color: '#9CA3AF',
+},
+
+modalOverlay: {
+  flex: 1,
+  backgroundColor: 'rgba(0,0,0,0.4)',
+  justifyContent: 'center',
+  padding: 24,
+},
+
+modalContent: {
+  backgroundColor: '#FFFFFF',
+  borderRadius: 20,
+  padding: 20,
+},
+
+modalTitle: {
+  fontSize: 20,
+  fontWeight: '700',
+  color: '#111827',
+  marginBottom: 20,
+},
+
+categoryOption: {
+  flexDirection: 'row',
+  alignItems: 'center',
+  paddingVertical: 14,
+  borderBottomWidth: 1,
+  borderBottomColor: '#E5E7EB',
+},
+
+categoryColor: {
+  width: 18,
+  height: 18,
+  borderRadius: 6,
+  marginRight: 12,
+},
+
+categoryOptionText: {
+  fontSize: 16,
+  color: '#111827',
+},
+
+emptyCategoryText: {
+  color: '#64748B',
+  fontSize: 16,
+  marginBottom: 20,
+},
+
+closeModalButton: {
+  marginTop: 20,
+  backgroundColor: '#111827',
+  paddingVertical: 14,
+  borderRadius: 12,
+  alignItems: 'center',
+},
+
+closeModalButtonText: {
+  color: '#FFFFFF',
+  fontWeight: '700',
+  fontSize: 16,
+},
 
   switchButton: {
     flex: 1,
