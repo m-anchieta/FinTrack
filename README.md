@@ -259,7 +259,20 @@ Este projeto tem como objetivos:
 
 ## 📸 Screenshots
 
-Em breve.
+<p align="center">
+  <img src="assets/screenshots/dashboard-home.png" width="220"/>
+  <img src="assets/screenshots/add-transaction.png" width="220"/>
+  <img src="assets/screenshots/select-category-modal.png" width="220"/>
+</p>
+
+<p align="center">
+  <img src="assets/screenshots/reports-charts.png" width="220"/>
+  <img src="assets/screenshots/reports-empty-state.png" width="220"/>
+</p>
+
+<p align="center">
+  <em>Telas do aplicativo FinTrack.</em>
+</p>
 
 ---
 
