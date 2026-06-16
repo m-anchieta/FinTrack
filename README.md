@@ -306,17 +306,24 @@ git push origin minha-feature
 
 ---
 
-## 👨‍💻 Autor
+## 👥 Equipe do Projeto
 
-**Mateus Anchieta**
+O FinTrack foi desenvolvido em colaboração por dois integrantes, com responsabilidades divididas entre desenvolvimento de interface e arquitetura de dados.
 
-Estudante de Ciência da Computação e desenvolvedor em formação.
+### Mateus Anchieta
 
-GitHub:
-https://github.com/m-anchieta
+Responsável pela arquitetura de persistência local de dados, integração com SQLite, modelagem e gerenciamento das informações da aplicação.
 
-LinkedIn:
-(adicionar link)
+GitHub: https://github.com/m-anchieta
+
+---
+
+### Gabriel Bezerra
+
+Responsável pela estrutura inicial do projeto, desenvolvimento do front-end, criação das telas e experiência do usuário da aplicação.
+
+GitHub: https://github.com/bezerragb
+
 
 ---
 
